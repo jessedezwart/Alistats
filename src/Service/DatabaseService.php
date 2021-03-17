@@ -87,6 +87,31 @@ class DatabaseService {
         $stmt->bind_param("is", $time, $summonerId);
         $stmt->execute();
     }
+
+    public function getGuild($discordId) {
+        $stmt = $this->conn->prepare("SELECT * FROM guilds WHERE discord_id=?");
+        $stmt->bind_param("i", $discordId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $result = $result->fetch_all(MYSQLI_ASSOC);
+
+        if (!empty($result)) {
+            return $result[0];
+        }
+        
+        return;
+    }
+
+    public function getGuildMembers($guildId) {
+        // Check if summoner already exists
+        $stmt = $this->conn->prepare("SELECT id,name,is_in_game FROM summoners WHERE guild_id=?;");
+        $stmt->bind_param("i", $guildId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $result = $result->fetch_all(MYSQLI_ASSOC);
+        
+        return $result;
+    }
     
 
     public function __destruct()

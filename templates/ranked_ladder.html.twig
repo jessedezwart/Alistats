@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+{% block main %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{{ guild.name }}</h1>
+</div>
+    <div class="container-fluid">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Rank - solo</th>
+                <th scope="col">Rank - flex</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for player in guildMembers %}
+            <tr>
+                <th scope="row"><a href="https://euw.op.gg/summoner/userName={{ player.name }}" target="_blank">{{ player.name }}</a></th>
+                <td>{{ player.currentRank.RANKED_SOLO_5X5.ranking }} - {{ player.currentRank.RANKED_SOLO_5X5.lp }} LP</td>
+                <td>{{ player.currentRank.RANKED_FLEX_SR.ranking }} - {{ player.currentRank.RANKED_FLEX_SR.lp }} LP</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

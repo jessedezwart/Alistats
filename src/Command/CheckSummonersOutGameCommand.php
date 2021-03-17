@@ -120,7 +120,8 @@ class CheckSummonersOutGameCommand extends Command
         
             // Get all the matches and store locally if not already done
             foreach ($matches as $key => $match) {
-                $output->writeln("Getting game $key/$matchCount");
+                $progressCount = $key + 1;
+                $output->writeln("Getting game $progressCount/$matchCount");
 
                 $gameId = $match["gameId"];
 
