@@ -33,22 +33,25 @@ class GuildDataProvider {
             $rankEntry["rankWorth"] = RankHelper::getRankWorth($unsummarizedRank[0], $unsummarizedRank[1], $rankEntry["lp"]);
 
             // convert datetime to timestamp for easy handling
-            $rankEntry["timestamp"] = Carbon::parse($rankEntry["timestamp"]);
+            $rankEntry["timestamp"] = new Carbon($rankEntry["timestamp"]);
         }
 
         unset($rankEntry); // unset because of weird behaviour when var name gets reused
 
         $beginTime = $rankHistory[0]["timestamp"];
 
+
         $endTime = $rankHistory[array_key_last ($rankHistory)]["timestamp"];
 
         $daysSinceBeginTime = $beginTime->diffInDays($endTime);
-
-        $selectedEntries = [];
         
-        for ($day=0; $day < $daysSinceBeginTime; $day++, $beginTime->addDay()) { 
+        $selectedEntries = [];
+        $averageWorthPerDay = [];
+        for ($day=0; $day <= $daysSinceBeginTime; $day++, $beginTime->addDay()) { 
 
-            $selectedEntries[$day] = [];
+            $dateTime = $beginTime->toDateString();
+
+            $selectedEntries[$dateTime] = [];
             
             $viableEntries = [];
 
@@ -64,19 +67,15 @@ class GuildDataProvider {
             $viableEntries = array_reverse($viableEntries);
 
             foreach ($viableEntries as $entry) {
-                if (!array_key_exists($entry["summoner_id"], $selectedEntries[$day])) {
-                    $selectedEntries[$day][$entry["summoner_id"]] = $entry;
+                if (!array_key_exists($entry["summoner_id"], $selectedEntries[$dateTime])) {
+                    $selectedEntries[$dateTime][$entry["summoner_id"]] = $entry;
                 }
             }
 
+            $averageWorthPerDay[$dateTime] = array_sum(array_column($selectedEntries[$dateTime], "rankWorth")) / count($selectedEntries[$dateTime]);
 
         }
 
-        $averageWorthPerDay = [];
-        foreach ($selectedEntries as $dayNumber => $day) {
-            $dateTime = $rankHistory[0]["timestamp"]->addDays($dayNumber)->toDateString();         ;
-            $averageWorthPerDay[$dateTime] = array_sum(array_column($day, "rankWorth")) / count($day);
-        }
 
         return $averageWorthPerDay;
         
