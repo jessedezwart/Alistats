@@ -93,6 +93,8 @@ class AddUserCommand extends Command
             $progressBar->advance();
         }
 
+        $dbService->updateLastMatchHistoryCrawl($summoner["id"]);
+
         return Command::SUCCESS;
     }
 }
