@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Helper\RankHelper;
+use App\Provider\Crawler\MatchCrawler;
 use App\Provider\DiscordMessageProvider;
 use App\Service\DatabaseService;
 use App\Service\DiscordService;
@@ -93,27 +94,12 @@ class CheckSummonersOutGameCommand extends Command
 
             // Get all matches that can be indexed since last indextime
             try {
-                $matches = [];
-                $beginIndex = 0;
-                $lastMatchHistoryCrawl = strtotime($summoner["last_match_history_crawl"]) * 1000; // Riot api uses milliseconds
-
-                do {
-                    $endIndex = $beginIndex + 100;
-
-                    $output->writeln("Getting games $beginIndex to a max of $endIndex");
-
-                    $matchlist = $riotApi->getMatchlist($summoner["account_id"], $beginIndex, $endIndex, $lastMatchHistoryCrawl)["matches"];
-                    $matchCount = count($matchlist);
-                    $beginIndex += 100;
-                    sleep(2); // @todo dont hardcode api limits
-                    $matches = array_merge($matches, $matchlist);
-                } while ($matchCount == 100);
-            
+                $matchCrawler = new MatchCrawler($riotApi);
+                $matches = $matchCrawler->crawlMatchList($summoner["account_id"], $summoner["last_match_history_crawl"]);
             } catch (\Throwable $th) {
                 $output->writeln($th->getMessage());
                 return Command::FAILURE;
             }
-
 
             $matchCount = count($matches);
 
@@ -125,17 +111,9 @@ class CheckSummonersOutGameCommand extends Command
 
                 $gameId = $match["gameId"];
 
-                // Check if game exists locally
-                if (file_exists($_ENV["BASEDIR"] . "/data/matches/$gameId.json")) { 
-                    continue;
-                }
+                $matchCrawler->crawlMatch($gameId);
 
-                // Get game
-                $richGame = $riotApi->getMatchData($gameId);
                 sleep(2);
-
-                // Store game
-                file_put_contents($_ENV["BASEDIR"] . "/data/matches/$gameId.json", json_encode($richGame));
             }
 
             $dbService->updateLastMatchHistoryCrawl($summoner["id"]);
