@@ -81,9 +81,6 @@ class RiotApi {
             throw new Exception("Index out of bounds.");
         }
 
-        
-        
-
         return $this->getData("match/v4/matchlists/by-account/", $encryptedAccountId, ["beginIndex" => $beginIndex, "endIndex" => $endIndex, "beginTime" => $beginTime]);
     }
 
