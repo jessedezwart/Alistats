@@ -114,9 +114,10 @@ class DatabaseService {
     }
  
     // @todo should be per guild
-    public function getRankHistory() {
+    public function getRankHistory($guildId) {
         // Check if summoner already exists
-        $stmt = $this->conn->prepare("SELECT summoner_id, queue_type, ranking, lp, timestamp FROM rank_history ORDER BY timestamp ASC;");
+        $stmt = $this->conn->prepare("SELECT summoner_id, queue_type, ranking, lp, timestamp FROM rank_history WHERE summoner_id IN (SELECT id FROM summoners WHERE guild_id=?) ORDER BY timestamp ASC;");
+        $stmt->bind_param("i", $guildId);
         $stmt->execute();
         $result = $stmt->get_result();
         $result = $result->fetch_all(MYSQLI_ASSOC);

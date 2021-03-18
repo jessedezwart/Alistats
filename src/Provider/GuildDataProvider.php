@@ -26,7 +26,7 @@ class GuildDataProvider {
     // @todo should be per guild and cleaned up a bit
     public function getAverageRankPerDay() {
         // get the full rank history
-        $rankHistory = $this->dbService->getRankHistory();
+        $rankHistory = $this->dbService->getRankHistory($this->guildId);
 
         foreach ($rankHistory as &$rankEntry) {
             $unsummarizedRank = RankHelper::getUnsummarizedRank($rankEntry["ranking"]);
@@ -75,7 +75,6 @@ class GuildDataProvider {
             $averageWorthPerDay[$dateTime] = array_sum(array_column($selectedEntries[$dateTime], "rankWorth")) / count($selectedEntries[$dateTime]);
 
         }
-
 
         return $averageWorthPerDay;
         

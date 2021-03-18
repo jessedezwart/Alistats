@@ -37,9 +37,9 @@ class WebController extends AbstractController
 
         $guildDataProvider = new GuildDataProvider($guildId);
 
-        $guildDataProvider->getAverageRankPerDay();
+        $guildRankAvgHistoryData = $guildDataProvider->getAverageRankPerDay();
 
-        return $this->render('overview.html.twig', ["guild" => $guild]);
+        return $this->render('overview.html.twig', ["guild" => $guild, "guildRankAvgHistoryData" => $guildRankAvgHistoryData]);
     }
 
     /**

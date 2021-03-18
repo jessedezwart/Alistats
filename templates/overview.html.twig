@@ -4,5 +4,25 @@
     <h1 class="h2">{{ guild.name }}</h1>
 </div>
 <div class="container-fluid">
+<div style="width: 800px">
+<canvas id="avgRankPerDayChart" width="400" height="400"></canvas>
+</div>
+<script>
+var ctx = document.getElementById('avgRankPerDayChart').getContext('2d');
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [{% for key in guildRankAvgHistoryData|keys %}'{{ key }}',{% endfor %}],
+        datasets: [{
+            label: 'Average elo',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [{% for value in guildRankAvgHistoryData %}'{{ value }}',{% endfor %}]
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+</script>
 </div>
 {% endblock %}
