@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Provider\GuildDataProvider;
 use App\Service\DatabaseService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,6 +35,10 @@ class WebController extends AbstractController
 
         $guild = $dbService->getGuild($guildId);
 
+        $guildDataProvider = new GuildDataProvider($guildId);
+
+        $guildDataProvider->getAverageRankPerDay();
+
         return $this->render('overview.html.twig', ["guild" => $guild]);
     }
 
@@ -56,6 +61,7 @@ class WebController extends AbstractController
             $guildMember["currentRank"]["RANKED_SOLO_5X5"] = $dbService->getCurrentRank($guildMember["id"], "RANKED_SOLO_5X5");
             $guildMember["currentRank"]["RANKED_FLEX_SR"] = $dbService->getCurrentRank($guildMember["id"], "RANKED_FLEX_SR");
         }
+
 
         return $this->render('ranked_ladder.html.twig', ["guild" => $guild, "guildMembers" => $guildMembers]);
     }

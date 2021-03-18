@@ -111,6 +111,9 @@
     "monolog/monolog": {
         "version": "2.2.0"
     },
+    "nesbot/carbon": {
+        "version": "2.46.0"
+    },
     "netresearch/jsonmapper": {
         "version": "v1.6.0"
     },

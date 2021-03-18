@@ -23,6 +23,13 @@ class RankHelper {
         "I"
     ];
 
+    public static function getRankWorth($tier, $rank, $lp) {
+        $tierWorth = array_search($tier, self::TIER_ORDER) * 400;
+        $rankWorth = array_search($rank, self::RANK_ORDER) * 100;
+
+        return $tierWorth + $rankWorth + $lp;
+    }
+
     public static function isRankHigher($oldRank, $newRank) {
         $oldRank = self::getUnsummarizedRank($oldRank);
         $newRank = self::getUnsummarizedRank($newRank);

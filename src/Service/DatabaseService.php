@@ -112,6 +112,17 @@ class DatabaseService {
         
         return $result;
     }
+ 
+    // @todo should be per guild
+    public function getRankHistory() {
+        // Check if summoner already exists
+        $stmt = $this->conn->prepare("SELECT * FROM rank_history ORDER BY timestamp ASC;");
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $result = $result->fetch_all(MYSQLI_ASSOC);
+        
+        return $result;
+    }
     
 
     public function __destruct()

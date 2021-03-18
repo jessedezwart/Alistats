@@ -12,6 +12,7 @@
         "doctrine/doctrine-bundle": "^2.2",
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.8",
+        "nesbot/carbon": "^2.46",
         "phpdocumentor/reflection-docblock": "^5.2",
         "restcord/restcord": "^0.5.0",
         "sensio/framework-extra-bundle": "^6.1",
